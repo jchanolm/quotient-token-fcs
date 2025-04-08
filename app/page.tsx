@@ -3,6 +3,8 @@
 
 import { useEffect, useState } from "react";
 import AverageScoreDisplay from "../components/AverageScoreDisplay";
+import FCSPercentiles from "../components/FCSPercentiles";
+import FCSHistogram from "../components/FCSHistogram";
 
 export default function Home() {
   const [avgScore, setAvgScore] = useState<number>(0);
@@ -23,7 +25,6 @@ export default function Home() {
         }
         
         const data = await response.json();
-        console.log('API Response:', data); // For debugging
         
         // Simplified data extraction
         if (data && typeof data.avg_score === 'number') {
@@ -49,7 +50,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-4">
             <h1 className="text-lg font-semibold text-gray-900 dark:text-white tracking-tight">
-              Token FCS
+              Token FCS Analytics
             </h1>
           </div>
         </div>
@@ -61,11 +62,19 @@ export default function Home() {
             {error}
           </div>
         ) : (
-          <div className="max-w-md mx-auto">
-            <AverageScoreDisplay 
-              avgScore={avgScore} 
-              isLoading={isLoading} 
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <AverageScoreDisplay 
+                avgScore={avgScore} 
+                isLoading={isLoading} 
+              />
+            </div>
+            <div>
+              <FCSPercentiles />
+            </div>
+            <div className="md:col-span-2">
+              <FCSHistogram />
+            </div>
           </div>
         )}
       </main>
