@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@farcaster/frame-sdk": "^0.0.34",
+    "neo4j": "^2.0.0-RC2",
+    "neo4j-driver": "^5.28.1",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
