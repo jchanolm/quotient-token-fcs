@@ -1,26 +1,109 @@
+/* app/globals.css */
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Light mode variables */
+  --background: #f9fafb;
+  --foreground: #111827;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --primary: #8a63d2; /* Farcaster purple */
+  --primary-hover: #6b46c1;
+  --primary-light: #e9d8fd;
+  --text-muted: #6b7280;
+  --text-primary: #8a63d2;
+  --highlight-bg: #f5f3ff;
+  --font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark mode variables */
+    --background: #0f172a; /* Dark blue/gray inspired by Palantir */
+    --foreground: #f1f5f9;
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --primary: #a78bfa; /* Purple 400 */
+    --primary-hover: #8b5cf6;
+    --primary-light: #1e1b4b;
+    --text-muted: #94a3b8;
+    --text-primary: #a78bfa;
+    --highlight-bg: #1e1b4b;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 150ms ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.text-highlight {
+  color: var(--text-primary);
+}
+
+.bg-highlight {
+  background-color: var(--highlight-bg);
+}
+
+/* Palantir-inspired visualization styles */
+.metric-card {
+  border-left: 2px solid var(--primary);
+}
+
+/* Table styles */
+.data-table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.data-table tr:hover {
+  background-color: var(--highlight-bg);
+}
+
+/* Custom scrollbar for Palantir aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--card-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
