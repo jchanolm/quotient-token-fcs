@@ -34,9 +34,9 @@ const verifyConnectivity = async () => {
 };
 
 // Function to run a Cypher query
-export const runQuery = async <T>(
+export const runQuery = async <T extends { [key: string]: unknown }>(
   query: string,
-  params: Record<string, any> = {}
+  params: Record<string, string | number | boolean> = {}
 ): Promise<T> => {
   const session = driver.session();
   
@@ -48,8 +48,8 @@ export const runQuery = async <T>(
       return keys.reduce((obj, key, index) => {
         obj[key] = values[index];
         return obj;
-      }, {} as any);
-    })[0] as T;
+      }, {} as T);
+    })[0];
   } catch (error) {
     console.error('Query execution failed:', error);
     throw error;

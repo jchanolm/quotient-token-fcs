@@ -11,8 +11,8 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Token FCS Statistics",
-  description: "Farcaster Credibility Score statistics and directory for tokens",
+  title: "Token FCS Average",
+  description: "Average Farcaster Credibility Score for tokens",
 };
 
 export default function RootLayout({

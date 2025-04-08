@@ -2,71 +2,71 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { sdk } from '@farcaster/frame-sdk';
-import { TokenHeader } from "../components/TokenHeader";
-import FCSMetricsContainer from "@/components/FCSMetricsContainer";
+import AverageScoreDisplay from "../components/AverageScoreDisplay";
 
 export default function Home() {
-  const [username, setUsername] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [token, setToken] = useState("");
-  const [tokenAddress, setTokenAddress] = useState("");
+  const [avgScore, setAvgScore] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Initialize the app
   useEffect(() => {
-    const initApp = async () => {
+    const fetchAverageFCS = async () => {
       try {
-        // Get user information from context
-        const context = await sdk.context;
-        if (context?.user?.username) {
-          setUsername(context.user.username);
+        setIsLoading(true);
+        setError(null);
+        
+        // Add a timestamp to prevent caching issues
+        const response = await fetch(`/api/average-fcs?t=${Date.now()}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch average FCS');
+        }
+        
+        const data = await response.json();
+        console.log('API Response:', data); // For debugging
+        
+        // Simplified data extraction
+        if (data && typeof data.avg_score === 'number') {
+          setAvgScore(data.avg_score);
         } else {
-          // Fallback for development
-          setUsername("dev_user");
+          console.warn('Unexpected response format:', data);
+          setAvgScore(0);
         }
-        
-        // Hide splash screen when UI is ready
-        if (sdk.actions && sdk.actions.ready) {
-          await sdk.actions.ready();
-        }
-        
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error initializing app:", error);
+      } catch (err) {
+        console.error('Error fetching average FCS:', err);
+        setError('Failed to load average FCS data');
+      } finally {
         setIsLoading(false);
       }
     };
 
-    initApp();
+    fetchAverageFCS();
   }, []);
-
-  // Handle token change
-  const handleTokenChange = (newToken) => {
-    setToken(newToken);
-    // In a real app, you would look up the address for the token
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-      {/* Header */}
-      <TokenHeader token={token} onTokenChange={handleTokenChange} />
+      <header className="bg-white dark:bg-gray-800 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-4">
+            <h1 className="text-lg font-semibold text-gray-900 dark:text-white tracking-tight">
+              Token FCS
+            </h1>
+          </div>
+        </div>
+      </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {isLoading ? (
-          <div className="animate-pulse text-center">
-            <div className="h-6 w-48 bg-gray-300 dark:bg-gray-700 rounded mx-auto mb-4"></div>
+        {error ? (
+          <div className="bg-red-50 dark:bg-red-900/20 p-5 rounded text-red-600 dark:text-red-400">
+            {error}
           </div>
         ) : (
-          <>
-            {/* Welcome section */}
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-medium text-gray-700 dark:text-gray-300">Welcome {username}</h2>
-              {token && <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">FCS Breakdown for Token: ${token}</p>}
-            </div>
-
-            {/* FCS Metrics - Using separated components */}
-            <FCSMetricsContainer tokenAddress={tokenAddress} />
-          </>
+          <div className="max-w-md mx-auto">
+            <AverageScoreDisplay 
+              avgScore={avgScore} 
+              isLoading={isLoading} 
+            />
+          </div>
         )}
       </main>
 
