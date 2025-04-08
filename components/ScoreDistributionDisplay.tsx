@@ -2,7 +2,7 @@
 'use client';
 
 interface ScoreDistributionProps {
-  scoreDistribution: Record<string, number>;
+  scoreDistribution: any;
   isLoading: boolean;
 }
 
@@ -16,8 +16,11 @@ export default function ScoreDistributionDisplay({ scoreDistribution, isLoading 
     );
   }
 
-  // Percentiles to display
-  const percentiles = ['0.5', '0.75', '0.9', '0.95', '0.99'];
+  // Percentiles to display - match the API's percentiles
+  const percentileLabels = ['50%', '75%', '90%', '95%', '99%'];
+  
+  // Ensure scoreDistribution is treated as an array (or convert empty to array)
+  const scores = Array.isArray(scoreDistribution) ? scoreDistribution : [];
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-sm rounded p-5">
@@ -26,15 +29,13 @@ export default function ScoreDistributionDisplay({ scoreDistribution, isLoading 
       </h3>
       
       <div className="grid grid-cols-5 gap-4">
-        {percentiles.map(percentile => (
-          <div key={percentile} className="text-center">
+        {percentileLabels.map((label, index) => (
+          <div key={label} className="text-center">
             <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-              {parseInt(percentile) * 100}%
+              {label}
             </div>
             <div className="font-medium text-purple-600 dark:text-purple-400">
-              {scoreDistribution?.[percentile] 
-                ? Math.round(scoreDistribution[percentile]) 
-                : 'N/A'}
+              {scores[index] ? Math.round(scores[index]) : 'N/A'}
             </div>
           </div>
         ))}

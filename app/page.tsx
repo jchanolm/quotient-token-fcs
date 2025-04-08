@@ -6,15 +6,11 @@ import { sdk } from '@farcaster/frame-sdk';
 import { TokenHeader } from "../components/TokenHeader";
 import FCSMetricsContainer from "@/components/FCSMetricsContainer";
 
-// Default token for initial load
-const defaultToken = "QUOTA";
-const defaultTokenAddress = "0x1abc02d9635a66adc4d0f5c177931ea69e9ef10";
-
 export default function Home() {
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [token, setToken] = useState(defaultToken);
-  const [tokenAddress, setTokenAddress] = useState(defaultTokenAddress);
+  const [token, setToken] = useState("");
+  const [tokenAddress, setTokenAddress] = useState("");
 
   // Initialize the app
   useEffect(() => {
@@ -65,7 +61,7 @@ export default function Home() {
             {/* Welcome section */}
             <div className="text-center mb-6">
               <h2 className="text-xl font-medium text-gray-700 dark:text-gray-300">Welcome {username}</h2>
-              <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">FCS Breakdown for Token: ${token}</p>
+              {token && <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">FCS Breakdown for Token: ${token}</p>}
             </div>
 
             {/* FCS Metrics - Using separated components */}

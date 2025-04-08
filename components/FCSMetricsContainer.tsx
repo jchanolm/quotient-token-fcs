@@ -9,15 +9,10 @@ interface FCSMetricsContainerProps {
   tokenAddress: string;
 }
 
-interface FCSMetrics {
-  avg_score: number;
-  score_distribution: Record<string, number>;
-}
-
 export default function FCSMetricsContainer({ tokenAddress }: FCSMetricsContainerProps) {
-  const [metrics, setMetrics] = useState<FCSMetrics | null>(null);
+  const [metrics, setMetrics] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -25,14 +20,15 @@ export default function FCSMetricsContainer({ tokenAddress }: FCSMetricsContaine
         setIsLoading(true);
         setError(null);
         
-        const response = await fetch(`/api/fcs-metrics?address=${tokenAddress}`);
+        const response = await fetch('/api/fcs-metrics');
         
         if (!response.ok) {
           throw new Error('Failed to fetch FCS metrics');
         }
         
         const data = await response.json();
-        setMetrics(data);
+        console.log('API Response:', data);
+        setMetrics(data[0]?.data || null);
       } catch (err) {
         console.error('Error fetching FCS metrics:', err);
         setError('Failed to load FCS metrics data');
@@ -52,15 +48,24 @@ export default function FCSMetricsContainer({ tokenAddress }: FCSMetricsContaine
     );
   }
 
+  // Define the type for metrics to fix TypeScript errors
+  interface Metrics {
+    avg_score: number;
+    score_distribution: any[];
+  }
+
+  // Type assertion to help TypeScript understand the structure
+  const typedMetrics = metrics as Metrics | null;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <AverageScoreDisplay 
-        avgScore={metrics?.avg_score || 0} 
+        avgScore={typedMetrics?.avg_score || 0} 
         isLoading={isLoading} 
       />
       
       <ScoreDistributionDisplay 
-        scoreDistribution={metrics?.score_distribution || {}} 
+        scoreDistribution={typedMetrics?.score_distribution || []} 
         isLoading={isLoading} 
       />
     </div>

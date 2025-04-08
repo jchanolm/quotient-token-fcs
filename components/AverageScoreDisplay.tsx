@@ -1,29 +1,74 @@
-// components/AverageScoreDisplay.tsx
+// components/FCSMetricsContainer.tsx
 'use client';
 
-interface AverageScoreProps {
-  avgScore: number;
-  isLoading: boolean;
+import { useEffect, useState } from 'react';
+import AverageScoreDisplay from './AverageScoreDisplay';
+import ScoreDistributionDisplay from './ScoreDistributionDisplay';
+
+interface FCSMetricsContainerProps {
+  tokenAddress: string;
 }
 
-export default function AverageScoreDisplay({ avgScore, isLoading }: AverageScoreProps) {
-  if (isLoading) {
+interface FCSMetricsData {
+  avg_score: number;
+  score_distribution: number[];
+}
+
+export default function FCSMetricsContainer({ tokenAddress }: FCSMetricsContainerProps) {
+  const [metrics, setMetrics] = useState<FCSMetricsData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // Use empty string for address to get the default from the API
+        const queryParam = tokenAddress ? `?address=${tokenAddress}` : '';
+        const response = await fetch(`/api/fcs-metrics${queryParam}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch FCS metrics');
+        }
+        
+        const responseData = await response.json();
+        
+        // Handle the API response format - extract the actual data
+        const metricsData = responseData.data || responseData;
+        
+        setMetrics(metricsData);
+      } catch (err) {
+        console.error('Error fetching FCS metrics:', err);
+        setError('Failed to load FCS metrics data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMetrics();
+  }, [tokenAddress]);
+
+  if (error) {
     return (
-      <div className="bg-white dark:bg-gray-800 shadow-sm rounded p-5 animate-pulse">
-        <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
-        <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+      <div className="bg-red-50 dark:bg-red-900/20 p-5 rounded text-red-600 dark:text-red-400">
+        {error}
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-sm rounded p-5">
-      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide text-center mb-2">
-        Average FCS Score
-      </h3>
-      <div className="text-5xl font-light text-purple-600 dark:text-purple-400 text-center">
-        {Math.round(avgScore)}
-      </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <AverageScoreDisplay 
+        avgScore={metrics?.avg_score || 0} 
+        isLoading={isLoading} 
+      />
+      
+      <ScoreDistributionDisplay 
+        scoreDistribution={metrics?.score_distribution || []} 
+        isLoading={isLoading} 
+      />
     </div>
   );
 }
