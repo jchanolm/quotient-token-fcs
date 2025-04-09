@@ -1,5 +1,6 @@
 // lib/neo4j.ts
 import neo4j from 'neo4j-driver';
+import neo4j_types from 'neo4j-driver';
 
 // Configure Neo4j connection
 const NEO4J_URI = process.env.NEO4J_URI;
@@ -33,6 +34,25 @@ const verifyConnectivity = async () => {
   }
 };
 
+// Helper function to prepare params for Neo4j
+const prepareParams = (params: Record<string, string | number | boolean>) => {
+  const preparedParams: Record<string, any> = {};
+  
+  // Process each parameter
+  for (const key in params) {
+    const value = params[key];
+    
+    // Convert 'limit' parameters to integer
+    if (key === 'limit' && typeof value === 'number') {
+      preparedParams[key] = neo4j.int(Math.floor(value));
+    } else {
+      preparedParams[key] = value;
+    }
+  }
+  
+  return preparedParams;
+};
+
 // Function to run a Cypher query
 export const runQuery = async <T extends { [key: string]: unknown }>(
   query: string,
@@ -41,7 +61,10 @@ export const runQuery = async <T extends { [key: string]: unknown }>(
   const session = driver.session();
   
   try {
-    const result = await session.run(query, params);
+    // Prepare parameters for Neo4j
+    const preparedParams = prepareParams(params);
+    
+    const result = await session.run(query, preparedParams);
     return result.records.map(record => {
       const keys = record.keys;
       const values = keys.map(key => record.get(key));

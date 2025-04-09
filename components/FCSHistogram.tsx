@@ -8,6 +8,9 @@ interface Percentile {
   count: number;
 }
 
+// Farcaster purple color
+const FARCASTER_PURPLE = 'rgba(147, 51, 234, 0.9)';
+
 export default function FCSHistogram() {
   const [percentiles, setPercentiles] = useState<Percentile[]>([]);
   const [histogramData, setHistogramData] = useState<any[]>([]);
@@ -49,7 +52,7 @@ export default function FCSHistogram() {
             const start = minScore + (i * binSize);
             const end = minScore + ((i + 1) * binSize);
             bins.push({
-              range: `${start.toFixed(0)}-${end.toFixed(0)}`,
+              range: `${start.toFixed(2)}-${end.toFixed(2)}`,
               frequency: 0, // Will be calculated from user distribution
               start,
               end
@@ -119,7 +122,7 @@ export default function FCSHistogram() {
               formatter={(value) => [`${value}`, 'Users']}
               labelFormatter={(label) => `FCS Score: ${label}`}
             />
-            <Bar dataKey="frequency" fill="#8884d8" name="Users" />
+            <Bar dataKey="frequency" fill={FARCASTER_PURPLE} name="Users" />
           </BarChart>
         </ResponsiveContainer>
       </div>

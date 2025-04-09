@@ -2,9 +2,10 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import AverageScoreDisplay from "../components/AverageScoreDisplay";
-import FCSPercentiles from "../components/FCSPercentiles";
-import FCSHistogram from "../components/FCSHistogram";
+import AverageScoreDisplay from "@/components/AverageScoreDisplay";
+import FCSPercentiles from "@/components/FCSPercentiles";
+import FCSHistogram from "@/components/FCSHistogram";
+import TokenHoldersTable from "@/components/TokenHoldersTable";
 
 export default function Home() {
   const [avgScore, setAvgScore] = useState<number>(0);
@@ -62,28 +63,29 @@ export default function Home() {
             {error}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <AverageScoreDisplay 
-                avgScore={avgScore} 
-                isLoading={isLoading} 
-              />
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <AverageScoreDisplay 
+                  avgScore={avgScore} 
+                  isLoading={isLoading} 
+                />
+              </div>
+              <div>
+                <FCSPercentiles />
+              </div>
             </div>
+            
             <div>
-              <FCSPercentiles />
-            </div>
-            <div className="md:col-span-2">
               <FCSHistogram />
+            </div>
+            
+            <div>
+              <TokenHoldersTable />
             </div>
           </div>
         )}
       </main>
-
-      <footer className="bg-white dark:bg-gray-800 py-3 mt-6 border-t border-gray-200 dark:border-gray-700">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-gray-500 dark:text-gray-400">
-          Powered by Quotient
-        </div>
-      </footer>
     </div>
   );
 }

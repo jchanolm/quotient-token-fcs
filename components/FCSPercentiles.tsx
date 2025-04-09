@@ -8,6 +8,9 @@ interface Percentile {
   count: number;
 }
 
+// Farcaster purple color
+const FARCASTER_PURPLE = 'rgba(147, 51, 234, 0.9)'; 
+
 export default function FCSPercentiles() {
   const [percentiles, setPercentiles] = useState<Percentile[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -62,7 +65,7 @@ export default function FCSPercentiles() {
   // Format data for display
   const formattedData = percentiles.map(item => ({
     name: `${item.percentile}th`,
-    score: item.count
+    score: Number(item.count.toFixed(2))
   }));
 
   return (
@@ -83,10 +86,10 @@ export default function FCSPercentiles() {
               label={{ value: 'FCS Score', angle: -90, position: 'insideLeft' }}
             />
             <Tooltip 
-              formatter={(value) => [`${value}`, 'FCS Score']}
+              formatter={(value) => [`${Number(value).toFixed(2)}`, 'FCS Score']}
               labelFormatter={(label) => `${label} Percentile`}
             />
-            <Bar dataKey="score" fill="#8884d8" name="FCS Score" />
+            <Bar dataKey="score" fill={FARCASTER_PURPLE} name="FCS Score" />
           </BarChart>
         </ResponsiveContainer>
       </div>

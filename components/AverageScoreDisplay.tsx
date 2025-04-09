@@ -21,8 +21,8 @@ export default function AverageScoreDisplay({ avgScore, isLoading }: AverageScor
       <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">
         Average FCS Score
       </h3>
-      <div className="text-4xl font-light text-purple-600 dark:text-purple-400">
-        {avgScore ? Math.round(avgScore) : 'N/A'}
+      <div className="text-4xl font-light" style={{ color: 'rgba(147, 51, 234, 0.9)' }}>
+        {avgScore ? avgScore.toFixed(2) : 'N/A'}
       </div>
     </div>
   );
